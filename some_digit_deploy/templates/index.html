@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Reconhecimento de dígitos</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
+    </head>
+
+    <body>
+        <canvas id="digito_canvas"></canvas>
+        <div id="debug">
+            <input type="button" id="clearButton" value="Limpar" style="">
+			<br/>
+			<span style="color: #4DAF7C; font-weight: 400; font-family: 'Open Sans', Helvetica;	">Desenhe o dígito dentro desta caixa usando o mouse!</span>
+		</div>
+		<div style="margin-left:175px; margin-top:460px; float:left; position:absolute;">
+			<a href="#" class="myButton"><span style=" font-weight: 400; font-family: 'Open Sans', Helvetica;"> Prever </span></a>			
+		</div>
+		<div >
+			<h1 id="result" style="margin-right:20px; margin-top:300px;float:left;"><span> </span></h1>
+		</div>
+        </div>
+
+    </body>
+
+    <script src="{{ url_for('static', filename='jquery-3.6.4.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='index.js')}}"></script>
+
+    <script type="text/javascript"> 
+        
+    $(".myButton").click(function(){
+        var $SCRIPT_ROOT = {{ request.script_root|tojson|safe}};
+        var canvasObj = document.getElementById('digito_canvas');
+        var img = canvasObj.toDataURL();
+        $.ajax({
+            type: "POST",
+            url: $SCRIPT_ROOT + "/predict/",
+            data: img,
+            success: function(data){
+                $('#result').text(' Dígito Previsto: '+ data);
+            }
+        });
+    });
+    </script>
+</html>
